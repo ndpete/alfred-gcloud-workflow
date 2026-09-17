@@ -1,0 +1,35 @@
+[project]
+name = "alfred-gcloud-workflow"
+version = "0.1.0"
+description = "Alfred workflow for Google Cloud Console shortcuts in pure Python standard library"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Nathan Peterson" }
+]
+dependencies = []
+
+[tool.uv]
+package = false
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
