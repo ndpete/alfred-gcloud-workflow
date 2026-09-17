@@ -46,3 +46,29 @@ def test_project_search(tmp_path, monkeypatch):
     assert len(items) == 1
     assert items[0]["title"] == "my-cool-project-prod"
     assert items[0]["arg"] == "my-cool-project-prod"
+
+
+def test_sync_in_progress_banner_empty_cache(tmp_path, monkeypatch):
+    monkeypatch.setenv("alfred_workflow_data", str(tmp_path))
+    monkeypatch.setattr("src.projects.is_sync_in_progress", lambda: True)
+
+    fb = run_projects("")
+    items = fb.to_dict()["items"]
+    assert len(items) == 1
+    assert "sync in progress" in items[0]["title"].lower()
+
+
+def test_sync_in_progress_banner_with_cached_projects(tmp_path, monkeypatch):
+    monkeypatch.setenv("alfred_workflow_data", str(tmp_path))
+    monkeypatch.setattr("src.projects.is_sync_in_progress", lambda: True)
+
+    cache_file = tmp_path / "google-projects.json"
+    cache_file.write_text(json.dumps([
+        {"name": "my-cool-project-prod", "id": "my-cool-project-prod", "number": 12345},
+    ]))
+
+    fb = run_projects("cool")
+    items = fb.to_dict()["items"]
+    assert len(items) == 2
+    assert "sync in progress" in items[0]["title"].lower()
+    assert items[1]["title"] == "my-cool-project-prod"

@@ -70,3 +70,49 @@ def test_sync_projects_detects_session_expiry(tmp_path, monkeypatch):
 
     with patch("subprocess.run", return_value=mock_proc), pytest.raises(RuntimeError, match="gcloud session expired"):
         sync_projects()
+
+
+def test_sync_feedback_success(tmp_path, monkeypatch):
+    monkeypatch.setenv("alfred_workflow_data", str(tmp_path))
+    monkeypatch.setattr("src.sync.sync_projects", lambda: [{"id": "p1"}, {"id": "p2"}])
+
+    from src.sync import sync_feedback
+
+    fb = sync_feedback()
+    assert len(fb.items) == 1
+    assert "✓ Synced 2 projects successfully" in fb.items[0].title
+
+
+def test_sync_feedback_error(tmp_path, monkeypatch):
+    def _fail():
+        raise RuntimeError("Not authenticated")
+
+    monkeypatch.setattr("src.sync.sync_projects", _fail)
+
+    from src.sync import sync_feedback
+
+    fb = sync_feedback()
+    assert len(fb.items) == 1
+    assert "⚠️ Not authenticated" in fb.items[0].title
+
+
+def test_is_sync_in_progress_with_active_lock(tmp_path, monkeypatch):
+    import os
+    monkeypatch.setenv("alfred_workflow_data", str(tmp_path))
+    from src.sync import is_sync_in_progress
+
+    assert not is_sync_in_progress()
+
+    lock_file = tmp_path / "sync.lock"
+    lock_file.write_text(json.dumps({"pid": os.getpid(), "started_at": 10000000000}))  # Far in future
+    assert is_sync_in_progress()
+
+
+def test_is_sync_in_progress_stale_lock(tmp_path, monkeypatch):
+    monkeypatch.setenv("alfred_workflow_data", str(tmp_path))
+    from src.sync import is_sync_in_progress
+
+    lock_file = tmp_path / "sync.lock"
+    lock_file.write_text(json.dumps({"pid": 99999, "started_at": 0}))  # Very old
+    assert not is_sync_in_progress()
+    assert not lock_file.exists()

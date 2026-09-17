@@ -8,7 +8,7 @@ from typing import Any
 
 from src.matching import fuzzy_match
 from src.models import Feedback, Item
-from src.sync import check_gcloud_auth
+from src.sync import check_gcloud_auth, is_sync_in_progress
 from src.updater import (
     REPO,
     check_for_updates,
@@ -92,15 +92,26 @@ def run_projects(query: str) -> Feedback:
             )
 
         # Refresh projects option
-        fb.add_item(
-            Item(
-                title="Refresh projects",
-                subtitle="Update cached GCP projects via gcloud CLI",
-                arg="-refresh",
-                autocomplete="-refresh",
-                valid=False,
+        if is_sync_in_progress():
+            fb.add_item(
+                Item(
+                    title="🔄 Project sync in progress...",
+                    subtitle="Google Cloud CLI is currently refreshing projects in the background",
+                    arg="-refresh",
+                    autocomplete="-refresh",
+                    valid=False,
+                )
             )
-        )
+        else:
+            fb.add_item(
+                Item(
+                    title="Refresh projects",
+                    subtitle="Update cached GCP projects via gcloud CLI",
+                    arg="-refresh",
+                    autocomplete="-refresh",
+                    valid=False,
+                )
+            )
 
         # Update command option
         if update_info:
@@ -149,8 +160,20 @@ def run_projects(query: str) -> Feedback:
         return fb
 
     # Normal Project Search
+    syncing = is_sync_in_progress()
     projects = load_cached_projects()
     if not projects:
+        if syncing:
+            fb.add_item(
+                Item(
+                    title="🔄 Project sync in progress...",
+                    subtitle="Fetching projects from Google Cloud CLI. Results will appear once completed.",
+                    arg="",
+                    valid=False,
+                )
+            )
+            return fb
+
         is_authed, auth_info = check_gcloud_auth()
         if not is_authed:
             fb.add_item(
@@ -172,6 +195,17 @@ def run_projects(query: str) -> Feedback:
                 )
             )
         return fb
+
+    # If sync is running while existing projects are cached, show banner at top
+    if syncing:
+        fb.add_item(
+            Item(
+                title="🔄 Project sync in progress...",
+                subtitle="Fetching updated projects via gcloud CLI. Showing cached projects below.",
+                arg="",
+                valid=False,
+            )
+        )
 
     # Show update banner at top of empty search when update is available
     if not q and update_info:
