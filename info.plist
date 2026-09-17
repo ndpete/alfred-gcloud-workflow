@@ -73,6 +73,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>FA7E2376-7253-4159-82ED-25A446B1801F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Nathan Peterson</string>
@@ -292,6 +305,19 @@ fi
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>triggerid</key>
+				<string>notify</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.external</string>
+			<key>uid</key>
+			<string>A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Shortcuts to known GCP products.
@@ -350,6 +376,13 @@ Run `g-refresh` which will update the cache of projects</string>
 			<integer>580</integer>
 			<key>ypos</key>
 			<integer>220</integer>
+		</dict>
+		<key>A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>380</integer>
+			<key>ypos</key>
+			<integer>340</integer>
 		</dict>
 	</dict>
 	<key>variables</key>

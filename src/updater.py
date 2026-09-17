@@ -169,16 +169,33 @@ def trigger_background_update_check() -> None:
     )
 
 
-def notify(message: str, title: str = "Google Cloud Shortcuts") -> None:
-    """Display a native desktop notification."""
+def notify(message: str, title: str = "Google Cloud") -> None:
+    """Display a native desktop notification using Alfred's workflow notification (with Google Cloud icon)."""
     escaped = message.replace('"', '\\"')
     script = (
+        f'tell application id "com.runningwithcrayons.Alfred" to '
+        f'run trigger "notify" in workflow "{BUNDLE_ID}" '
+        f'with argument "{escaped}"'
+    )
+    try:
+        res = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if res.returncode == 0:
+            return
+    except OSError:
+        pass
+
+    fallback = (
         f'tell application id "com.runningwithcrayons.Alfred" to '
         f'display notification "{escaped}" with title "{title}"'
     )
     try:
         subprocess.run(
-            ["osascript", "-e", script],
+            ["osascript", "-e", fallback],
             check=False,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
