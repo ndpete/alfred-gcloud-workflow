@@ -113,22 +113,24 @@ def run_projects(query: str) -> Feedback:
                 )
             )
 
-        # Update command option
+        # Update command options
         if update_info:
-            update_title = f"🚀 Update available (v{update_info['version']})!"
-            update_sub = "Press ⏎ to download and install update via Alfred"
-            update_arg = "cmd:update"
-        else:
-            update_title = "Check for updates"
-            update_sub = "Check GitHub for new workflow releases"
-            update_arg = f"https://github.com/{REPO}/releases/latest"
+            fb.add_item(
+                Item(
+                    title=f"🚀 Update available (v{update_info['version']})!",
+                    subtitle="Press ⏎ to download and install update via Alfred",
+                    arg="cmd:update",
+                    autocomplete="-update",
+                    valid=True,
+                )
+            )
 
         fb.add_item(
             Item(
-                title=update_title,
-                subtitle=update_sub,
-                arg=update_arg,
-                autocomplete="-update",
+                title="Check for updates",
+                subtitle="Check GitHub for newer versions of this workflow",
+                arg="cmd:check-update",
+                autocomplete="-check-update",
                 valid=True,
             )
         )

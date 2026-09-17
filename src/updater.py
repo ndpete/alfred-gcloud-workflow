@@ -261,3 +261,20 @@ def download_and_install_update() -> tuple[bool, str]:
     subprocess.run(["open", str(dest_file)], check=False)
     return True, f"Opened installer for v{latest_ver}"
 
+
+def run_manual_update_check() -> tuple[bool, str]:
+    """Manually force check for updates and notify the user."""
+    notify("Checking GitHub for updates...")
+    update_info = check_for_updates(force=True)
+    cur_ver = get_current_version()
+    if update_info and update_info.get("version"):
+        latest = update_info["version"]
+        msg = f"Update available: v{latest}! Type 'g' to install."
+        notify(msg)
+        return True, msg
+    else:
+        msg = f"Workflow is up to date (v{cur_ver})."
+        notify(msg)
+        return False, msg
+
+

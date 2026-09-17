@@ -12,6 +12,43 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
+				<string>B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D5E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D5E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A5B</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>C1D2E3F4-A5B6-4C7D-8E9F-0A1B2C3D4E5F</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>69F317AB-1200-45A6-BAEC-AB0E66199A68</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>D1E2F3A4-B5C6-4D7E-8F9A-0B1C2D3E4F5A</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
 				<string>6EFB9247-E484-4AB4-833C-0CDB249CCB39</string>
 				<key>modifiers</key>
 				<integer>0</integer>
@@ -123,17 +160,7 @@
 				<key>runningsubtext</key>
 				<string></string>
 				<key>script</key>
-				<string>if [[ "${project}" == "cmd:update" ]]; then
-	/usr/bin/python3 -c "from src.updater import download_and_install_update; download_and_install_update()"
-	exit 0
-fi
-
-if [[ "${project}" =~ ^https?:// ]]; then
-	open "${project}"
-	exit 0
-fi
-
-/usr/bin/python3 -m src.products -query "$1" -project "${project}"</string>
+				<string>/usr/bin/python3 -m src.products -query "$1" -project "${project}"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -318,6 +345,79 @@ fi
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string>{query}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>4</integer>
+						<key>matchstring</key>
+						<string>^cmd:</string>
+						<key>outputlabel</key>
+						<string>Command</string>
+						<key>uid</key>
+						<string>C1D2E3F4-A5B6-4C7D-8E9F-0A1B2C3D4E5F</string>
+					</dict>
+					<dict>
+						<key>inputstring</key>
+						<string>{query}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>4</integer>
+						<key>matchstring</key>
+						<string>^https?://</string>
+						<key>outputlabel</key>
+						<string>URL</string>
+						<key>uid</key>
+						<string>D1E2F3A4-B5C6-4D7E-8F9A-0B1C2D3E4F5A</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>Project</string>
+				<key>hideelse</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D5E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>if [[ "$1" == "cmd:update" ]]; then
+	/usr/bin/python3 -c "from src.updater import download_and_install_update; download_and_install_update()"
+elif [[ "$1" == "cmd:check-update" ]]; then
+	/usr/bin/python3 -c "from src.updater import run_manual_update_check; run_manual_update_check()"
+fi</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A5B</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Shortcuts to known GCP products.
@@ -383,6 +483,20 @@ Run `g-refresh` which will update the cache of projects</string>
 			<integer>380</integer>
 			<key>ypos</key>
 			<integer>340</integer>
+		</dict>
+		<key>B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D5E</key>
+		<dict>
+			<key>xpos</key>
+			<integer>210</integer>
+			<key>ypos</key>
+			<integer>105</integer>
+		</dict>
+		<key>E1F2A3B4-C5D6-4E7F-8A9B-0C1D2E3F4A5B</key>
+		<dict>
+			<key>xpos</key>
+			<integer>375</integer>
+			<key>ypos</key>
+			<integer>15</integer>
 		</dict>
 	</dict>
 	<key>variables</key>

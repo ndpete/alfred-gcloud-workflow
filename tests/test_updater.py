@@ -9,6 +9,7 @@ from src.updater import (
     is_newer_version,
     notify,
     parse_version,
+    run_manual_update_check,
 )
 
 
@@ -84,3 +85,27 @@ def test_notify(monkeypatch):
     with patch("subprocess.run") as mock_run:
         notify("Test notification")
     assert mock_run.called
+
+
+def test_run_manual_update_check_with_update(monkeypatch):
+    monkeypatch.setattr("src.updater.notify", MagicMock())
+    monkeypatch.setattr(
+        "src.updater.check_for_updates",
+        lambda force: {"version": "0.3.0", "download_url": "https://example.com/asset.alfredworkflow"},
+    )
+    monkeypatch.setattr("src.updater.get_current_version", lambda: "0.2.0")
+
+    ok, msg = run_manual_update_check()
+    assert ok is True
+    assert "0.3.0" in msg
+
+
+def test_run_manual_update_check_up_to_date(monkeypatch):
+    monkeypatch.setattr("src.updater.notify", MagicMock())
+    monkeypatch.setattr("src.updater.check_for_updates", lambda force: None)
+    monkeypatch.setattr("src.updater.get_current_version", lambda: "0.2.0")
+
+    ok, msg = run_manual_update_check()
+    assert ok is False
+    assert "0.2.0" in msg
+
