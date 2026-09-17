@@ -398,7 +398,7 @@ Run `g-refresh` which will update the cache of projects</string>
 	</array>
 	<!-- x-release-please-start-version -->
 	<key>version</key>
-	<string>0.2.0</string>
+	<string>0.2.1</string>
 	<!-- x-release-please-end -->
 	<key>webaddress</key>
 	<string>https://github.com/ndpete/alfred-gcloud-workflow</string>
